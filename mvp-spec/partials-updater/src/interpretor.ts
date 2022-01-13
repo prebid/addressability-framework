@@ -27,18 +27,18 @@ export async function interpret(tokens: LexerToken[]): Promise<string> {
             case LexerTokenType.PartialBegin: {
                 i++;
                 if (i == tokens.length) {
-                    throw new Error("Partial Begin without Partial End");
+                    throw new Error(`Partial Begin without Partial End: ${token.text}`);
                 }
                 let nextToken = tokens[i];
                 if (nextToken.type == LexerTokenType.PlainText) {
                     i++;
                     if (i == tokens.length) {
-                        throw new Error("Partial Begin without Partial End");
+                        throw new Error(`Partial Begin without Partial End: ${token.text}`);
                     }
                 }
                 nextToken = tokens[i];
                 if (nextToken.type != LexerTokenType.PartialEnd) {
-                    throw new Error("Partial Begin without partial end");
+                    throw new Error(`Partial Begin without Partial End: ${token.text}`);
                 }
                 doc += token.text;
                 doc += await interpretPartialBeginToken(token);

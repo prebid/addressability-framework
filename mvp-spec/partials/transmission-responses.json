@@ -1,0 +1,30 @@
+{
+    "transmissions": [
+        {
+            "version": 0,
+            "transaction_id": 1234567,
+            "receiver": "dsp1.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "dsp1.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            },
+            "children": []
+        },
+        {
+            "version": 0,
+            "transaction_id": 12345678,
+            "receiver": "dsp1.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "dsp1.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            },
+            "children": []
+        }
+    ]
+}

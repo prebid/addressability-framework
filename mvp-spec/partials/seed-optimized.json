@@ -1,8 +1,9 @@
 {
     "version": 0,
     "transaction_id": 1234567,
+    "publisher": "publisher.com",
     "source": {
-        "domain": "publisher.com",
+        "domain": "adserver-compagny.com",
         "timestamp": 1639582000,
         "signature": "12345_signature"
     }

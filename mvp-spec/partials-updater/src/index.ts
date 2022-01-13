@@ -7,10 +7,15 @@ async function update() {
     for (const doc of docs) {
         const content = loadDocument(doc)
         const tokens = lex(content);
-        const processedContent = await interpret(tokens);
-        if (processedContent != content) {
-            rewriteDocument(doc, processedContent);
-            console.log(`Document updated: ${doc}`);
+        try {
+            const processedContent = await interpret(tokens);
+            if (processedContent != content) {
+                rewriteDocument(doc, processedContent);
+                console.log(`Document updated: ${doc}`);
+            }
+        } catch (e) {
+            const wrapError = new Error(`Error in file "${doc}"\n${e}`);
+            throw wrapError;
         }
     }
 }
