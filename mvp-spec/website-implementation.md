@@ -33,11 +33,12 @@ JSON
 #### Overview
 
 A Publisher delegates the signatures of the Seeds and the Root Transmission
-request to an *Addressable Content Server* before offering it as an inventory. 
+request to an *Addressable Content Service* before offering it as an inventory. 
 This can be an Ad Server or an extra service. As a reminder, a Seed is the 
-signed aggregation of Addressable Contents with the Prebid SSO Data.
+signed association of an Addressable Content with Prebid SSO Data.
 
-Note that each placement has a Seed and at least one Transmission request.
+In term of relationship, each placement has a Seed and at least 
+one Transmission request.
 
 ```mermaid
 flowchart
@@ -46,12 +47,16 @@ flowchart
     AC-- 1-n ---RT[Transmission]
 ```
 
-#### Offering inventory with an Ad Server solution
+#### Offer inventory with an Ad Server
 
-We consider that the Ad Server is also the Addressable Content Server. This is 
-the recommended solution as it reduces the number of web service calls for
-a given Addressable Content.
+In case of the setup with an Ad Server, the Publisher must adapt the webservice 
+call for offering its inventory by adding the Prebid SSO cookies.
 
+Here is an overview of the interactions between the Publisher Website, 
+the Ad Server and the Ad Network:
+
+<!--partial-begin { "files": [ "ad-server-flow.mmd" ], "block": "mermaid" } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 ```mermaid
 sequenceDiagram
     participant User
@@ -59,524 +64,19 @@ sequenceDiagram
     participant AdServer as Ad Server
     participant DSP
 
-    User->>Publisher: Query a webpage
-    Publisher->>AdServer: Offer Addressable Contents
+    User->>Publisher: Ask for a webpage
+    Publisher->>AdServer: Offer Inventory<br />with Prebid SSO Data
     AdServer->>AdServer: Generate Seeds for <br /> the Addressable Contents
     AdServer->>DSP: Generate and send a <br /> Transmission Request
-    DSP->>AdServer: Provide an Addressable Content <br /> and a Transmission Response
-    AdServer->>Publisher: Provide the Addressable Content
-    Publisher->>User: Display the Addressable Content <br /> and its Audit Log
-```
-
-##### Share Prebid SSO Data with the inventory
-
-Prebid SSO doesn't standardize the API of the Ad Server for offering
-Addressable Contents because each Ad Server has an existing and specific API. 
-However, to implement Prebid SSO, the Ad Server need to follow guidances.
-
-**1. Require the Prebid SSO Cookies**
-
-The Ad Server API requires the Prebid SSO cookies that contain the 
-encrypted Prebid SSO Data in its existing API. 
-
-**2. Decrypt the Prebid SSO Data**
-
-Via a shared cryptographic key, the Ad Server decrypts the Prebid SSO Cookies
-so that it can read the Prebid SSO Data. Those Prebid SSO Data are composed of
-one or many Pseudonymous-Identifiers and the Preferences of the user.
-
-Here is the structure of a Pseudonymous-Identifier:
-
-<!--partial-begin { "files": [ "identifier-table.md" ] } -->
-| Field   | Type          | Details                                            |
-|---------|---------------|----------------------------------------------------|
-| version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |
-| type    | String        | The type of Pseudonymous-Identifier. For now, there is only one: "prebid_id".                                                    |
-| value   | String        | The Pseudonymous-Identifier value in UTF-8.                                                                                      |
-| source  | Source object | The Source contains all the data for identifying and trusting the Operator that generated the Pseudonymous-Identifier. <br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Operator.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Operator.</td></tr></table>|
-<!--partial-end-->
-
-Here is the structure of the Preferences:
-
-<!--partial-begin { "files": [ "preferences-table.md" ] } -->
-| Field   | Type                   | Details                                   |
-|---------|------------------------|-------------------------------------------|
-| version | Number                 | The Prebid SSO version of the object.     |
-| data    | Dictionary             | The key is a string and represents the name of the preference. <br /> The values represent the value of the preference. <br /> For now there is only one preference named "optin" and its value is a boolean.|
-| source  | Source object          | The source contains the data for identifying and trusting the CMP that signed lastly the Preferences.<br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the CMP.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the CMP.</td></tr></table>|
-<!--partial-end-->
-
-The Preferences object lists all the preferences of a user in a dictionary. For
-now, there is only one preference ("opt-in").
-
-**3. Generate the Seed**
-
-The Seed is the association of the Pseudonymous-Identifiers and the
-Preferences of the user for a given Addressable Content. Once generated, a
-Prebid SSO party in possession of a Seed can share it with another party via 
-Transmissions (the next step). A Seed is signed by the Ad Server for 
-audit purposes. 
-
-Here is the composition of a Seed:
-
-<!--partial-begin { "files": [ "seed-optimized-table.md" ] } -->
-| Field                  | Type                                     | Details  |
-|------------------------|------------------------------------------|----------|
-| version                | Number                                   | The Prebid SSO version of the object.|
-| transaction_id         | String                                   | A GUID in a String format dedicated to the share of the Prebid SSO data for one Addressable Content.|
-| publisher         | String                                   | The domain name of the Publisher that displays the Addressable Content|
-| source                 | Source object                            | The source contains data for identifying and trusting the Publisher.<br /><table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Root Party (Publisher in most of the cases).</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Root Party/Publisher.</td></tr></table>|
-<!--partial-end-->
-
-Here is a JSON example of the Seed:
-
-<!--partial-begin { "files": [ "seed-optimized.json" ], "block": "json" } -->
-```json
-{
-    "version": 0,
-    "transaction_id": 1234567,
-    "publisher": "publisher.com",
-    "source": {
-        "domain": "adserver-compagny.com",
-        "timestamp": 1639582000,
-        "signature": "12345_signature"
-    }
-}
+    DSP->>AdServer: Provide an Addressable Contents <br /> and a Transmission Response
+    AdServer->>Publisher: Provide the Addressable Contents
+    Publisher->>User: Display the Addressable Contents <br /> and their respective Audit Logs
 
 ```
 <!--partial-end-->
 
-The Ad Server must sign the Seeds. The Elliptic Curve Digital Signature Algorithm
-(ECDSA) is used for this purpose. NIST P-256 coupled with the hash algorithm
-SHA-256 is applied on a build string that relies on the Seed data
-and the Prebid SSO Data.
-
-Here is how to build the UTF-8 string for generating the signature:
-
-<!--partial-begin { "files": [ "seed-signature-string.txt" ], "block": "" } -->
-```
-seed.source.domain + '\u2063' + 
-seed.source.timestamp + '\u2063' + 
-
-seed.transaction_id + '\u2063' + 
-
-seed.identifiers[0].source.signature + '\u2063' +
-seed.identifiers[1].source.signature + '\u2063' +
-... + '\u2063' + 
-seed.identifiers[n].source.signature + '\u2063' + 
-
-seed.preferences.source.signature
-
-```
-<!--partial-end-->
-
-**4. Send Transmission Requests**
-
-Once the Seeds are generated (one per Addressable Content), the Ad Server can
-share the Prebid SSO Data via Transmissions with inventory data to 
-Prebid SSO Parties. In the case of an existing custom communication 
-(a.k.a not OpenRTB), the Transmission Requests must be included in the existing
-communication and bound structurally or by reference to the data of the 
-impressions (also named Addressable Content).
-
-A Transmission Request is composed as followed:
-
-<!--partial-begin { "files": [ "transmission-request-table.md" ] } -->
-
-| Field  | Type                            | Details                           |
-|--------|---------------------------------|-----------------------------------|
-| version| Number                          | The Prebid SSO version of the object.               |
-| seed   | Seed object                     | A Seed object contains all the Prebid SSO Data gathered and signed by the Publisher concerning the user. |
-| parents| Array of Transmission Results   | A list of Transmission Results that participate to a chain of Transmissions and make this Transmission possible. |  
-| source | Source object                   | The source object contains data for identifying the Sender of the Transmission.<br /><table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Sender.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Tranmission sender.</td></tr></table>|
-<!--partial-end-->
-
-Similar to the Seed, the Transmission Request contains a signature for 
-audit purposes. It used the data of the Transaction Request and the domain
-name of the Receiver with the same cryptographic algorithm.
-
-Here is how to build the UTF-8 string:
-
-<!--partial-begin { "files": [ "transmission-request-signature-string.txt" ], "block": "" } -->
-```
-transmission_request_receiver_domain        + '\u2063' +
-transmission_request.source.domain          + '\u2063' + 
-transmission_request.source.timestamp       + '\u2063' + 
-seed.source.signature
-
-```
-<!--partial-end-->
-
-In the communication, the Transmission Requests must be associated to the 
-Prebid SSO Data. Depending on the existing structure of the communication,
-it makes sense to have a shared structure for the Prebid SSO Data and 
-multiple Transmissions referring to it.
-
-Here is a non-standardized example that must be adapted to the existing API:
-
-<!--partial-begin { "files": [ "transmission-requests.json" ], "block": "json" } -->
-```json
-{
-    "data": {
-        "identifiers": [
-            {
-                "version": 0,
-                "type": "prebid_id",
-                "value": "7435313e-caee-4889-8ad7-0acd0114ae3c",
-                "source": {
-                    "domain": "operator0.com",
-                    "timestamp": 1639580000,
-                    "signature": "12345_signature"
-                }
-            }
-        ],
-        "preferences": {
-            "data": { 
-                "opt_in": true 
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            }
-        }
-    },
-    "transmissions": [
-        {
-            "version": 0,
-            "seed": {
-                "version": 0,
-                "transaction_id": 1234567,
-                "source": {
-                    "domain": "publisher.com",
-                    "timestamp": 1639582000,
-                    "signature": "12345_signature"
-                }
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            },
-            "parents": []
-        },
-        {
-            "version": 0,
-            "seed": {
-                "version": 0,
-                "transaction_id": 1234567,
-                "source": {
-                    "domain": "publisher.com",
-                    "timestamp": 1639582000,
-                    "signature": "12345_signature"
-                }
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            },
-            "parents": []
-        }
-    ]
-}
-```
-<!--partial-end-->
-
-**5. Receive Transmission Responses**
-
-The Receiver of the Transmission Requests answers back with Transmission 
-Responses. Those Transmission Responses are included in the usual response of
-an inventory offer. Each Transmission Response doesn't necessary have a 
-Transmission Response only those that have been useful for generating the 
-Addressable Content.
-
-A Transmission Response is composed as followed:
-
-<!--partial-begin { "files": [ "transmission-response-table.md" ] } -->
-| Field           | Type                          | Details                           |
-|-----------------|-------------------------------|-----------------------------------|
-| version         | Number                        | The version of the Prebid SSO used for generating the Transmission Response.                                                                                                                                                                                                                               |
-| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows associating the Transmission Responses to Transmission Request                                                                                                                     |
-| receiver        | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
-| status          | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
-| details         | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
-| children        | Array of Transmission Results | An empty array as we consider that the DSP doesn't share the Prebid SSO Data to its suppliers via new transmissions.                                                                                                                                                                                       |
-| source          | Source object                 | The source contains all the data for identifying the DSP and verifying the Transmission.                                                                                                                                                                                                                   |
-<!--partial-end-->
-
-Therefore, here is a non-standardized example of Transmission Responses that
-must be adapted to the existing API:
-
-<!--partial-begin { "files": [ "transmission-requests.json" ], "block": "json" } -->
-```json
-{
-    "data": {
-        "identifiers": [
-            {
-                "version": 0,
-                "type": "prebid_id",
-                "value": "7435313e-caee-4889-8ad7-0acd0114ae3c",
-                "source": {
-                    "domain": "operator0.com",
-                    "timestamp": 1639580000,
-                    "signature": "12345_signature"
-                }
-            }
-        ],
-        "preferences": {
-            "data": { 
-                "opt_in": true 
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            }
-        }
-    },
-    "transmissions": [
-        {
-            "version": 0,
-            "seed": {
-                "version": 0,
-                "transaction_id": 1234567,
-                "source": {
-                    "domain": "publisher.com",
-                    "timestamp": 1639582000,
-                    "signature": "12345_signature"
-                }
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            },
-            "parents": []
-        },
-        {
-            "version": 0,
-            "seed": {
-                "version": 0,
-                "transaction_id": 1234567,
-                "source": {
-                    "domain": "publisher.com",
-                    "timestamp": 1639582000,
-                    "signature": "12345_signature"
-                }
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639581000,
-                "signature": "12345_signature"
-            },
-            "parents": []
-        }
-    ]
-}
-```
-<!--partial-end-->
-
-**6. Generate the Audit Log**
-
-Once the Ad Server has selected the supplier that will display the
-Addressable Content, it must generate the Audit Log based on the related
-Transmission Response and the Prebid SSO Data.
-
-The Audit Log has the following structure:
-
-<!--partial-begin { "files": [ "audit-log-table.md" ] } -->
-| Field         | Type                         | Detail                        |
-|---------------|------------------------------|-------------------------------|
-| seed          | Seed Object                  | The Seed object is the association of an Addressable Content with Prebid SSO Data. |
-| transmissions | List of Transmission Results | A list of Transmission Results |
-<!--partial-end-->
-
-As described, the Audit Log contains a list of Transmission Results. The 
-Transmission Results are built thanks to the data within the received 
-Transmission Response that participates in the Addressable Content. The required
-data are the status and the signature of the Transmission Response and its 
-children.
-
-Here is the structure of a Transmission Result:
-
-<!--partial-begin { "files": [ "transmission-result-table.md" ] } -->
-| Field           | Type                          | Details                           |
-|-----------------|-------------------------------|-----------------------------------|
-| version         | Number                        | The version of the Prebid SSO used for generating the Transmission Response.                                                                                                                                                                                                                               |
-| receiver        | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
-| status          | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
-| details         | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
-| source          | Source object                 | The source contains all the data for identifying the DSP and verifying the Transmission.                                                                                                                                                                                                                   |
-<!--partial-end-->
-
-Let's take an example of a transformation to Transmission Results.
-Here is a received Transmission Response that helps to generate the Addressable Content:
-
-<!--partial-begin { "files": [ "transmission-response-with-children.json" ], "block": "json" } -->
-```json
-{
-    "version": 0,
-    "transaction_id": 1234567,
-    "receiver": "ssp1.com",
-    "status": "success",
-    "details": "",
-    "source": {
-        "domain": "ssp1.com",
-        "timestamp": 1639589531,
-        "signature": "12345_signature"
-    },
-    "children": [
-        {
-            "receiver": "ssp2.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "ssp2.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        },
-        {
-            "receiver": "dsp.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "dsp.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        }
-    ]
-}
-```
-<!--partial-end-->
-
-Here is the associated list of Transmission Results:
-
-<!--partial-begin { "files": [ "transmission-responses.json" ], "block": "json" } -->
-```json
-{
-    "transmissions": [
-        {
-            "version": 0,
-            "transaction_id": 1234567,
-            "receiver": "dsp1.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "dsp1.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            },
-            "children": []
-        },
-        {
-            "version": 0,
-            "transaction_id": 12345678,
-            "receiver": "dsp1.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "dsp1.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            },
-            "children": []
-        }
-    ]
-}
-
-```
-<!--partial-end-->
-
-After this transformation, it is possible to generate the Audit Log. Here is
-an example:
-
-<!--partial-begin { "files": [ "audit-log.json" ], "block": "json" } -->
-```json
-{
-    "data": {
-        "identifiers": [
-            {
-                "version": 0,
-                "type": "prebid_id",
-                "value": "7435313e-caee-4889-8ad7-0acd0114ae3c",
-                "source": {
-                    "domain": "operotor0.com",
-                    "timestamp": 1639589531,
-                    "signature": "12345_signature"
-                }
-            }
-        ],
-        "preferences": {
-            "version": 0,
-            "data": { 
-                "opt_in": true 
-            },
-            "source": {
-                "domain": "cmp1.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        }
-    },
-    "seed": {
-        "version": 0,
-        "transaction_id": 1234567,
-        "publisher": "publisher.com",
-        "source": {
-          "domain": "operator0.com",
-          "timestamp": 1639589531,
-          "signature": "12345_signature"
-        }
-    },
-    "transmissions": [
-        {
-            "version": 0,
-            "receiver": "ssp1.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "ssp1.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        },
-        {
-            "version": 0,
-            "receiver": "ssp2.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "ssp2.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        },
-        {
-            "version": 0,
-            "receiver": "dsp.com",
-            "status": "success",
-            "details": "",
-            "source": {
-                "domain": "dps.com",
-                "timestamp": 1639589531,
-                "signature": "12345_signature"
-            }
-        }
-    ]
-}
-```
-<!--partial-end-->
-
-**7. Display the Addressable Content and make the Audit Log available**
-
-Finally, the Addressable Content can be displayed and depending on the 
-implementation choice, the Audit Log can be added in a hidden tag in the
-DOM or log in to the console.
-
-
+For this purpose, the Publisher need to implement the new API of the Ad Server
+described in [mvp-spec/ad-server-implementation.md](./ad-server-implementation.md)
 
 #### Offering inventory with Prebid.js (out of scope of the MVP for now)
 
@@ -584,7 +84,7 @@ DOM or log in to the console.
 sequenceDiagram
     participant User
     participant Publisher
-    participant ACS as Addressable Content Server
+    participant ACS as Addressable Content Service
     participant Prebidjs as Prebid.js
     participant User
     participant Publisher
@@ -604,7 +104,7 @@ sequenceDiagram
     Publisher->>User: Display the page with the Addressable Content. 
 ```
 
-##### Addressable Content Server Endpoint
+##### Addressable Content Service Endpoint
 
 The Publisher must call the Addressage Content Server Endpoint with the
 Prebid SSO Data stored in the cookies of the User. It must consider the
@@ -657,17 +157,19 @@ The Body object:
 
 
 <!--partial-begin { "files": [ "preferences-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
-| version | Number                 | The Prebid SSO version of the object.     |
-| data    | Dictionary             | The key is a string and represents the name of the preference. <br /> The values represent the value of the preference. <br /> For now there is only one preference named "optin" and its value is a boolean.|
+| version | Number                 | The Prebid SSO version used.     |
+| data    | Dictionary             | The keys are strings and represent the name of the preferences. <br /> The values represent the value of the preference. <br /> For now there is only one preference named "optin" and its value is a boolean.|
 | source  | Source object          | The source contains the data for identifying and trusting the CMP that signed lastly the Preferences.<br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the CMP.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the CMP.</td></tr></table>|
 <!--partial-end-->
 
 <!--partial-begin { "files": [ "identifier-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
-| version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |
+| version | Number        | The version of Prebid SSO used.                                                                       |
 | type    | String        | The type of Pseudonymous-Identifier. For now, there is only one: "prebid_id".                                                    |
 | value   | String        | The Pseudonymous-Identifier value in UTF-8.                                                                                      |
 | source  | Source object | The Source contains all the data for identifying and trusting the Operator that generated the Pseudonymous-Identifier. <br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Operator.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Operator.</td></tr></table>|
@@ -675,6 +177,7 @@ The Body object:
 
 Example:
 <!--partial-begin { "files": [ "seed-optimized.json", "body-id-and-preferences.json" ], "jq": "{ seeds: [ .[0] , .[0]  ] } +  .[1]  | .seeds[1].transaction_id += 1" } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 ```json
 {
   "seeds": [
@@ -683,7 +186,7 @@ Example:
       "transaction_id": 1234567,
       "publisher": "publisher.com",
       "source": {
-        "domain": "adserver-compagny.com",
+        "domain": "adserver-company.com",
         "timestamp": 1639582000,
         "signature": "12345_signature"
       }
@@ -693,7 +196,7 @@ Example:
       "transaction_id": 1234568,
       "publisher": "publisher.com",
       "source": {
-        "domain": "adserver-compagny.com",
+        "domain": "adserver-company.com",
         "timestamp": 1639582000,
         "signature": "12345_signature"
       }
@@ -735,7 +238,7 @@ Transmission signatures and Transaction signatures sign your Addressable
 Content Server and your Prebid SSO cookies. For this purpose, you need to 
 update [the bootstrap](https://docs.prebid.org/dev-docs/getting-started.html) 
 of `pbjs` with the properties `getSsoSignatures` with the call 
-of your Addressable Content Server.
+of your Addressable Content Service.
 
 ```js
 pbjs.getSsoSignatures = function(onLoad) {

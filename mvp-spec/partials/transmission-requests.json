@@ -36,7 +36,7 @@
                 }
             },
             "source": {
-                "domain": "cmp1.com",
+                "domain": "dsp1.com",
                 "timestamp": 1639581000,
                 "signature": "12345_signature"
             },
@@ -54,7 +54,7 @@
                 }
             },
             "source": {
-                "domain": "cmp1.com",
+                "domain": "dps1.com",
                 "timestamp": 1639581000,
                 "signature": "12345_signature"
             },

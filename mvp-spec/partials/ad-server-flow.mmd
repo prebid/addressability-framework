@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant User
+    participant Publisher
+    participant AdServer as Ad Server
+    participant DSP
+
+    User->>Publisher: Ask for a webpage
+    Publisher->>AdServer: Offer Inventory<br />with Prebid SSO Data
+    AdServer->>AdServer: Generate Seeds for <br /> the Addressable Contents
+    AdServer->>DSP: Generate and send a <br /> Transmission Request
+    DSP->>AdServer: Provide an Addressable Contents <br /> and a Transmission Response
+    AdServer->>Publisher: Provide the Addressable Contents
+    Publisher->>User: Display the Addressable Contents <br /> and their respective Audit Logs
