@@ -40,7 +40,9 @@ export async function interpret(tokens: LexerToken[]): Promise<string> {
                 if (nextToken.type != LexerTokenType.PartialEnd) {
                     throw new Error(`Partial Begin without Partial End: ${token.text}`);
                 }
+                const lineBreak = getLineBreakSymbol(token.text);
                 doc += token.text;
+                doc += "<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->" + lineBreak;
                 doc += await interpretPartialBeginToken(token);
                 doc += nextToken.text;
                 break;
@@ -67,8 +69,8 @@ async function interpretPartialBeginToken(token: LexerToken) : Promise<string> {
             const partial = getPartialInCodeBlock(json);
             return partial;
         } 
-        let partials = config.files.map(loadPartial);
-        let lineBreak = getLineBreakSymbol(config.files[0]);
+        const partials = config.files.map(loadPartial);
+        const lineBreak = getLineBreakSymbol(config.files[0]);
         let merged = partials.join(lineBreak)
         if (config.hasOwnProperty('block')) {
             merged = getPartialInCodeBlock(merged, config.block);
