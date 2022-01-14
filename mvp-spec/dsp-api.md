@@ -305,7 +305,7 @@ suppliers, it shouldn't take care of the "children" Transmission Results.
 | Field           | Type                          | Details                           |
 |-----------------|-------------------------------|-----------------------------------|
 | version         | Number                        | The version of the Prebid SSO used for generating the Transmission Response.                                                                                                                                                                                                                               |
-| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows to associate the Transmission Responses to Transmission Request                                                                                                                     |
+| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows associating the Transmission Responses to Transmission Request                                                                                                                     |
 | receiver        | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
 | status          | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
 | details         | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
@@ -599,7 +599,7 @@ it received for this Addressable content.
 <!--partial-begin { "files": [ "audit-log-table.md" ] } -->
 | Field         | Type                         | Detail                        |
 |---------------|------------------------------|-------------------------------|
-| seed          | Seed Object                  | The Seed object already described in this document. |
+| seed          | Seed Object                  | The Seed object is the association of an Addressable Content with Prebid SSO Data. |
 | transmissions | List of Transmission Results | A list of Transmission Results |
 <!--partial-end-->
 

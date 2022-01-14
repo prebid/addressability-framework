@@ -49,7 +49,7 @@ flowchart
 #### Offering inventory with an Ad Server solution
 
 We consider that the Ad Server is also the Addressable Content Server. This is 
-the recommanded solution as it reduces the number of webservice calls for
+the recommended solution as it reduces the number of web service calls for
 a given Addressable Content.
 
 ```mermaid
@@ -70,7 +70,7 @@ sequenceDiagram
 
 ##### Share Prebid SSO Data with the inventory
 
-Prebid SSO doesn't standartized the API of the Ad Server for offering
+Prebid SSO doesn't standardize the API of the Ad Server for offering
 Addressable Contents because each Ad Server has an existing and specific API. 
 However, to implement Prebid SSO, the Ad Server need to follow guidances.
 
@@ -106,16 +106,16 @@ Here is the structure of the Preferences:
 | source  | Source object          | The source contains the data for identifying and trusting the CMP that signed lastly the Preferences.<br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the CMP.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the CMP.</td></tr></table>|
 <!--partial-end-->
 
-The Preferences object list all the preferences of a user in a dictionary. For
+The Preferences object lists all the preferences of a user in a dictionary. For
 now, there is only one preference ("opt-in").
 
 **3. Generate the Seed**
 
 The Seed is the association of the Pseudonymous-Identifiers and the
 Preferences of the user for a given Addressable Content. Once generated, a
-Prebid SSO party in possession of a Seed can share it to another party via 
+Prebid SSO party in possession of a Seed can share it with another party via 
 Transmissions (the next step). A Seed is signed by the Ad Server for 
-auditability purpose. 
+audit purposes. 
 
 Here is the composition of a Seed:
 
@@ -146,7 +146,7 @@ Here is a JSON example of the Seed:
 ```
 <!--partial-end-->
 
-The AdServer must sign the Seeds. The Elliptic Curve Digital Signature Algorithm
+The Ad Server must sign the Seeds. The Elliptic Curve Digital Signature Algorithm
 (ECDSA) is used for this purpose. NIST P-256 coupled with the hash algorithm
 SHA-256 is applied on a build string that relies on the Seed data
 and the Prebid SSO Data.
@@ -176,7 +176,7 @@ Once the Seeds are generated (one per Addressable Content), the Ad Server can
 share the Prebid SSO Data via Transmissions with inventory data to 
 Prebid SSO Parties. In the case of an existing custom communication 
 (a.k.a not OpenRTB), the Transmission Requests must be included in the existing
-communication and binded struturaly or by reference to the data of the 
+communication and bound structurally or by reference to the data of the 
 impressions (also named Addressable Content).
 
 A Transmission Request is composed as followed:
@@ -191,8 +191,8 @@ A Transmission Request is composed as followed:
 | source | Source object                   | The source object contains data for identifying the Sender of the Transmission.<br /><table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Sender.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Tranmission sender.</td></tr></table>|
 <!--partial-end-->
 
-Similarly to the Seed, the Transmission Request contains a signature for 
-auditability purpose. It used the data of the Transaction Request and the domain
+Similar to the Seed, the Transmission Request contains a signature for 
+audit purposes. It used the data of the Transaction Request and the domain
 name of the Receiver with the same cryptographic algorithm.
 
 Here is how to build the UTF-8 string:
@@ -208,9 +208,9 @@ seed.source.signature
 <!--partial-end-->
 
 In the communication, the Transmission Requests must be associated to the 
-Prebid SSO Data. Depending of the existing structure of the communication,
+Prebid SSO Data. Depending on the existing structure of the communication,
 it makes sense to have a shared structure for the Prebid SSO Data and 
-multiple Transmissions refering to it.
+multiple Transmissions referring to it.
 
 Here is a non-standardized example that must be adapted to the existing API:
 
@@ -286,7 +286,7 @@ Here is a non-standardized example that must be adapted to the existing API:
 **5. Receive Transmission Responses**
 
 The Receiver of the Transmission Requests answers back with Transmission 
-Responses. Thoses Transmission Responses are included in the usual response of
+Responses. Those Transmission Responses are included in the usual response of
 an inventory offer. Each Transmission Response doesn't necessary have a 
 Transmission Response only those that have been useful for generating the 
 Addressable Content.
@@ -297,7 +297,7 @@ A Transmission Response is composed as followed:
 | Field           | Type                          | Details                           |
 |-----------------|-------------------------------|-----------------------------------|
 | version         | Number                        | The version of the Prebid SSO used for generating the Transmission Response.                                                                                                                                                                                                                               |
-| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows to associate the Transmission Responses to Transmission Request                                                                                                                     |
+| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows associating the Transmission Responses to Transmission Request                                                                                                                     |
 | receiver        | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
 | status          | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
 | details         | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
@@ -388,13 +388,13 @@ The Audit Log has the following structure:
 <!--partial-begin { "files": [ "audit-log-table.md" ] } -->
 | Field         | Type                         | Detail                        |
 |---------------|------------------------------|-------------------------------|
-| seed          | Seed Object                  | The Seed object already described in this document. |
+| seed          | Seed Object                  | The Seed object is the association of an Addressable Content with Prebid SSO Data. |
 | transmissions | List of Transmission Results | A list of Transmission Results |
 <!--partial-end-->
 
 As described, the Audit Log contains a list of Transmission Results. The 
-Transmission Results are build thanks to the data within the received 
-Transmission Response that participate to the Addressable Content. The required
+Transmission Results are built thanks to the data within the received 
+Transmission Response that participates in the Addressable Content. The required
 data are the status and the signature of the Transmission Response and its 
 children.
 
@@ -411,7 +411,7 @@ Here is the structure of a Transmission Result:
 <!--partial-end-->
 
 Let's take an example of a transformation to Transmission Results.
-Here is a received Transmission Response that help to generate the Addressable Content:
+Here is a received Transmission Response that helps to generate the Addressable Content:
 
 <!--partial-begin { "files": [ "transmission-response-with-children.json" ], "block": "json" } -->
 ```json
@@ -452,7 +452,7 @@ Here is a received Transmission Response that help to generate the Addressable C
 ```
 <!--partial-end-->
 
-Here are the associated list of Transmission Result:
+Here is the associated list of Transmission Results:
 
 <!--partial-begin { "files": [ "transmission-responses.json" ], "block": "json" } -->
 ```json
@@ -572,9 +572,9 @@ an example:
 
 **7. Display the Addressable Content and make the Audit Log available**
 
-Finally, the Addressable Content can be displayed and depending of the 
-implementation choice, the Audit Log can be added in an hidden tag in the
-DOM or log in the console.
+Finally, the Addressable Content can be displayed and depending on the 
+implementation choice, the Audit Log can be added in a hidden tag in the
+DOM or log in to the console.
 
 
 
@@ -607,7 +607,7 @@ sequenceDiagram
 ##### Addressable Content Server Endpoint
 
 The Publisher must call the Addressage Content Server Endpoint with the
-Prebid SSO Data stored into the cookies of the User. It must consider the
+Prebid SSO Data stored in the cookies of the User. It must consider the
 cookie as an URL encoded raw data and send it as it is.
 
 It must reach the following endpoint:
@@ -757,7 +757,7 @@ pbjs.getSsoSignatures = function(onLoad) {
 To use Prebid SSO, Prebid.js will extend its [Build Request API](https://docs.prebid.org/dev-docs/bidder-adaptor.html#building-the-request) 
 so that the Adaptors get the Prebid SSO Data.
 
-Each adunit has an extra `ssoSignature` string which represent the digital 
+Each adunit has an extra `ssoSignature` string which represents the digital 
 signature of the Prebid SSO data for the given adunit:
 
 ```js
@@ -811,7 +811,7 @@ SSO Data of the user:
 ```
 
 
-ℹ️  `TransactionId` already exist in the AdUnit.
+ℹ️  `TransactionId` already exists in the AdUnit.
 
 So the buildRequest function can use the Prebid SSO Data to generate
 its requests.
@@ -846,8 +846,8 @@ Then Prebid.js will extend the [Interpreting Request API](https://docs.prebid.or
 can return the Transmission Result.
 
 The `bidResponse` has an extra parameter named `sso`. It contains a list of 
-Transmission Results. This list must contains all the Transmission Results 
-that have occured for the given bid.
+Transmission Results. This list must contain all the Transmission Results 
+that have occurred for the given bid.
 
 ```js
 {
@@ -888,5 +888,4 @@ that have occured for the given bid.
 ## CMP
 
 ## 
-
 
