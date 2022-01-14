@@ -1,7 +1,3 @@
-
-The Seed represents the aggregation of the Pseudonymous-Identifiers and the
-Preferences of the user for a given Addressable Content. 
-
 | Field                  | Type                                     | Details  |
 |------------------------|------------------------------------------|----------|
 | version                | Number                                   | The Prebid SSO version of the object.|

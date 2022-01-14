@@ -1,6 +1,3 @@
-The Preferences object list all the preferences of a user in a dictionary. For
-now, there is only one preference ("opt-in").
-
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
 | version | Number                 | The Prebid SSO version of the object.     |

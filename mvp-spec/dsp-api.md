@@ -189,9 +189,6 @@ Preferences of the user for a given Addressable Content.
 ### The Preferences object
 
 <!--partial-begin { "files": [ "preferences-table.md" ] } -->
-The Preferences object list all the preferences of a user in a dictionary. For
-now, there is only one preference ("opt-in").
-
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
 | version | Number                 | The Prebid SSO version of the object.     |
@@ -204,10 +201,10 @@ Note that the "data" field is a simple dictionnary.
 
 ### The Identifier object
 
-<!--partial-begin { "files": [ "identifier-table.md" ] } -->
 The Pseudonymous-Identifier object represent one identifier for the user. For
 now, there is one type possible ("prebid_id").
 
+<!--partial-begin { "files": [ "identifier-table.md" ] } -->
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
 | version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |

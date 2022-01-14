@@ -88,9 +88,6 @@ one or many Pseudonymous-Identifiers and the Preferences of the user.
 Here is the structure of a Pseudonymous-Identifier:
 
 <!--partial-begin { "files": [ "identifier-table.md" ] } -->
-The Pseudonymous-Identifier object represent one identifier for the user. For
-now, there is one type possible ("prebid_id").
-
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
 | version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |
@@ -102,9 +99,6 @@ now, there is one type possible ("prebid_id").
 Here is the structure of the Preferences:
 
 <!--partial-begin { "files": [ "preferences-table.md" ] } -->
-The Preferences object list all the preferences of a user in a dictionary. For
-now, there is only one preference ("opt-in").
-
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
 | version | Number                 | The Prebid SSO version of the object.     |
@@ -112,6 +106,8 @@ now, there is only one preference ("opt-in").
 | source  | Source object          | The source contains the data for identifying and trusting the CMP that signed lastly the Preferences.<br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the CMP.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the CMP.</td></tr></table>|
 <!--partial-end-->
 
+The Preferences object list all the preferences of a user in a dictionary. For
+now, there is only one preference ("opt-in").
 
 **3. Generate the Seed**
 
@@ -124,10 +120,6 @@ auditability purpose.
 Here is the composition of a Seed:
 
 <!--partial-begin { "files": [ "seed-optimized-table.md" ] } -->
-
-The Seed represents the aggregation of the Pseudonymous-Identifiers and the
-Preferences of the user for a given Addressable Content. 
-
 | Field                  | Type                                     | Details  |
 |------------------------|------------------------------------------|----------|
 | version                | Number                                   | The Prebid SSO version of the object.|
@@ -665,9 +657,6 @@ The Body object:
 
 
 <!--partial-begin { "files": [ "preferences-table.md" ] } -->
-The Preferences object list all the preferences of a user in a dictionary. For
-now, there is only one preference ("opt-in").
-
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
 | version | Number                 | The Prebid SSO version of the object.     |
@@ -676,9 +665,6 @@ now, there is only one preference ("opt-in").
 <!--partial-end-->
 
 <!--partial-begin { "files": [ "identifier-table.md" ] } -->
-The Pseudonymous-Identifier object represent one identifier for the user. For
-now, there is one type possible ("prebid_id").
-
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
 | version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |

@@ -1,6 +1,3 @@
-The Pseudonymous-Identifier object represent one identifier for the user. For
-now, there is one type possible ("prebid_id").
-
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
 | version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |
