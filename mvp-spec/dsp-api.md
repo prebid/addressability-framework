@@ -173,34 +173,49 @@ In a case of an ad-hoc communication between two Contracting Parties, the
 
 ### The Seed object
 
+The Seed represents the aggregation of the Pseudonymous-Identifiers and the
+Preferences of the user for a given Addressable Content.
+
+<!--partial-begin { "files": [ "seed-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
+
 | Field                  | Type                                     | Details  |
 |------------------------|------------------------------------------|----------|
-| version                | Number                                   | The Prebid SSO version of the object.                                                                                                                                                                                            |
-| transaction_id         | String                                   | A GUID in a String format dedicated to the share of the Prebid SSO data for one Addressable Content.                                                                                                                                    |
-| preferences            | Preferences object                       | The Preferences of the user.                                                                                                                                                                                                            |
-| identifiers            | Array of Pseudonymous-Identifier objects | The Pseudonymous-Identifiers of the user. For now, it only contains a Prebid ID.                                                                                                                                                        |
-| source                 | Source object                            | The source contains data for identifying and trusting the Publisher.<br /><table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Root Party (Publisher in most of the cases).</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Root Party/Publisher.</td></tr></table>|
-
+| version                | Number                                   | The Prebid SSO version used.|
+| transaction_id         | String                                   | A GUID in a String format dedicated to the share of the Prebid SSO data for one Addressable Content.|
+| preferences            | Preferences object                       | The Preferences of the user.|
+| identifiers            | Array of Pseudonymous-Identifier objects | The Pseudonymous-Identifiers of the user. For now, it only contains a Prebid ID.|
+| source                 | Source object                            | The source contains data for identifying and trusting the Party that generated the Seed.<br /><table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Party (Ad Server in most of the cases).</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Root Party/Publisher.</td></tr></table>|
+<!--partial-end-->
 
 ### The Preferences object
 
+<!--partial-begin { "files": [ "preferences-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 | Field   | Type                   | Details                                   |
 |---------|------------------------|-------------------------------------------|
-| version | Number                 | The Prebid SSO version of the object.                                                                                                                                                                       |
-| data    | Dictionary             | The key is a string and represents the name of the preference. <br /> The values represent the value of the preference. <br /> For now there is only one preference named "optin" and its value is a boolean.|
+| version | Number                 | The Prebid SSO version used.     |
+| data    | Dictionary             | The keys are strings and represent the name of the preferences. <br /> The values represent the value of the preference. <br /> For now there is only one preference named "optin" and its value is a boolean.|
 | source  | Source object          | The source contains the data for identifying and trusting the CMP that signed lastly the Preferences.<br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the CMP.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the CMP.</td></tr></table>|
+<!--partial-end-->
 
 Note that the "data" field is a simple dictionnary.
 
 
 ### The Identifier object
 
+The Pseudonymous-Identifier object represent one identifier for the user. For
+now, there is one type possible ("prebid_id").
+
+<!--partial-begin { "files": [ "identifier-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 | Field   | Type          | Details                                            |
 |---------|---------------|----------------------------------------------------|
-| version | Number        | The version of Prebid SSO used for signing the Identifier.                                                                       |
+| version | Number        | The version of Prebid SSO used.                                                                       |
 | type    | String        | The type of Pseudonymous-Identifier. For now, there is only one: "prebid_id".                                                    |
 | value   | String        | The Pseudonymous-Identifier value in UTF-8.                                                                                      |
 | source  | Source object | The Source contains all the data for identifying and trusting the Operator that generated the Pseudonymous-Identifier. <br /> <table><tr><th>Field</th><th>Type</th><th>Details</th></tr><tr><td>domain</td><td>String</td><td>The domain of the Operator.</td></tr><tr><td>timestamp</td><td>Integer</td><td>The timestamp of the signature.</td></tr><tr><td>signature</td><td>String</td><td>Encoded signature in UTF-8 of the Operator.</td></tr></table>|
+<!--partial-end-->
 
 ## The Transaction Result object
 
@@ -290,15 +305,18 @@ suppliers, it shouldn't take care of the "children" Transmission Results.
 
 ### Transmission object
 
-| Field    | Type                          | Details                           |
-|----------|-------------------------------|-----------------------------------|
-| version  | Number                        | The version of the Prebid SSO used for generating the Transmission Response.                                                                                                                                                                                                                               |
-| receiver | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
-| status   | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
-| details  | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
-| children | Array of Transmission Results | An empty array as we consider that the DSP doesn't share the Prebid SSO Data to its suppliers via new transmissions.                                                                                                                                                                                       |
-| source   | Source object                 | The source contains all the data for identifying the DSP and verifying the Transmission.                                                                                                                                                                                                                   |
-
+<!--partial-begin { "files": [ "transmission-response-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
+| Field           | Type                          | Details                           |
+|-----------------|-------------------------------|-----------------------------------|
+| version         | Number                        | The version of the Prebid SSO used.                                                                                                                                                                                                                               |
+| transaction_id  | String                        | A GUID dedicated to the Addressable Content. It allows associating the Transmission Responses to Transmission Request                                                                                                                     |
+| receiver        | String                        | The domain name of the DSP.                                                                                                                                                                                                                                                                                |
+| status          | String                        | Equals "success" if the DSP signed the Transmission and returns it to the sender.<br /> Equals "error_bad_request" if the receiver doesn't understand or see inconsistency in the Transmission Request.<br /> Equals "error_cannot_process" if the receiver cannot handle the Transmission Request properly. |
+| details         | String                        | In case of an error status, the DSP can provide details concerning the error.                                                                                                                                                                                                                              |
+| children        | Array of Transmission Results | An empty array as we consider that the DSP doesn't share the Prebid SSO Data to its suppliers via new transmissions.                                                                                                                                                                                       |
+| source          | Source object                 | The source contains all the data for identifying the DSP and verifying the Transmission.                                                                                                                                                                                                                   |
+<!--partial-end-->
 
 ### Signing the Transmission Object
 
@@ -583,10 +601,13 @@ it received for this Addressable content.
 
 ### The root object
 
+<!--partial-begin { "files": [ "audit-log-table.md" ] } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 | Field         | Type                         | Detail                        |
 |---------------|------------------------------|-------------------------------|
-| seed          | Seed Object                  | The Seed object already described in this document. |
+| seed          | Seed Object                  | The Seed object is the association of an Addressable Content with Prebid SSO Data. |
 | transmissions | List of Transmission Results | A list of Transmission Results |
+<!--partial-end-->
 
 ### The Transmission Result object
 
@@ -599,11 +620,11 @@ document).
 
 ### Example of Audit Log
 
+<!--partial-begin { "files": [ "audit-log.json" ], "block": "json" } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 ```json
 {
-    "seed": {
-        "version": 0,
-        "transaction_id": 1234567,
+    "data": {
         "identifiers": [
             {
                 "version": 0,
@@ -626,7 +647,12 @@ document).
                 "timestamp": 1639589531,
                 "signature": "12345_signature"
             }
-        },
+        }
+    },
+    "seed": {
+        "version": 0,
+        "transaction_id": 1234567,
+        "publisher": "publisher.com",
         "source": {
           "domain": "operator0.com",
           "timestamp": 1639589531,
@@ -636,22 +662,33 @@ document).
     "transmissions": [
         {
             "version": 0,
-            "receiver": "party2.com",
+            "receiver": "ssp1.com",
             "status": "success",
             "details": "",
             "source": {
-                "domain": "party2.com",
+                "domain": "ssp1.com",
                 "timestamp": 1639589531,
                 "signature": "12345_signature"
             }
         },
         {
             "version": 0,
-            "receiver": "party3.com",
+            "receiver": "ssp2.com",
             "status": "success",
             "details": "",
             "source": {
-                "domain": "party3.com",
+                "domain": "ssp2.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        },
+        {
+            "version": 0,
+            "receiver": "dsp.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "dps.com",
                 "timestamp": 1639589531,
                 "signature": "12345_signature"
             }
@@ -659,6 +696,7 @@ document).
     ]
 }
 ```
+<!--partial-end-->
 
 # Display of the Audit UI
 
@@ -736,20 +774,22 @@ alpha-numerical order of the keys existing in the dictionary.
 
 The Audit Log contains a Seed. The UTF-8 string for the Seed must be built as
 followed:
-
+<!--partial-begin { "files": [ "seed-signature-string.txt" ], "block": "" } -->
+<!-- ⚠️ GENERATED CONTENT - DO NOT MODIFY DIRECTLY ⚠️ -->
 ```
 seed.source.domain + '\u2063' + 
 seed.source.timestamp + '\u2063' + 
-
 seed.transaction_id + '\u2063' + 
-
+seed.publisher + '\u2063' + 
 seed.identifiers[0].source.signature + '\u2063' +
 seed.identifiers[1].source.signature + '\u2063' +
 ... + '\u2063' + 
-seed.identifiers[n].source.signature + '\u2063' + 
-
+seed.identifiers[n].source.signature + '\u2063' +
 seed.preferences.source.signature
+
 ```
+<!--partial-end-->
+
 Note that we iterate over the identifiers by taking for each signature and
 appending it to the UTF-8 string. 
 
