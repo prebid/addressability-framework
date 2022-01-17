@@ -1,2 +1,4 @@
 /mvp-spec/examples/node_modules/
 /**/.idea
+mvp-spec/partials-updater/dist/
+mvp-spec/partials-updater/node_modules/
