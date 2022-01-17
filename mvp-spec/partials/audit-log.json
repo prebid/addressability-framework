@@ -1,0 +1,72 @@
+{
+    "data": {
+        "identifiers": [
+            {
+                "version": 0,
+                "type": "prebid_id",
+                "value": "7435313e-caee-4889-8ad7-0acd0114ae3c",
+                "source": {
+                    "domain": "operotor0.com",
+                    "timestamp": 1639589531,
+                    "signature": "12345_signature"
+                }
+            }
+        ],
+        "preferences": {
+            "version": 0,
+            "data": { 
+                "opt_in": true 
+            },
+            "source": {
+                "domain": "cmp1.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        }
+    },
+    "seed": {
+        "version": 0,
+        "transaction_id": 1234567,
+        "publisher": "publisher.com",
+        "source": {
+          "domain": "operator0.com",
+          "timestamp": 1639589531,
+          "signature": "12345_signature"
+        }
+    },
+    "transmissions": [
+        {
+            "version": 0,
+            "receiver": "ssp1.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "ssp1.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        },
+        {
+            "version": 0,
+            "receiver": "ssp2.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "ssp2.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        },
+        {
+            "version": 0,
+            "receiver": "dsp.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "dps.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        }
+    ]
+}

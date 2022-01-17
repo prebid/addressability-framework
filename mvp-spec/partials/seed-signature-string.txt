@@ -1,0 +1,9 @@
+seed.source.domain + '\u2063' + 
+seed.source.timestamp + '\u2063' + 
+seed.transaction_id + '\u2063' + 
+seed.publisher + '\u2063' + 
+seed.identifiers[0].source.signature + '\u2063' +
+seed.identifiers[1].source.signature + '\u2063' +
+... + '\u2063' + 
+seed.identifiers[n].source.signature + '\u2063' +
+seed.preferences.source.signature

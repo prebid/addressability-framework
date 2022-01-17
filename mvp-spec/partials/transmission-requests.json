@@ -1,0 +1,64 @@
+{
+    "data": {
+        "identifiers": [
+            {
+                "version": 0,
+                "type": "prebid_id",
+                "value": "7435313e-caee-4889-8ad7-0acd0114ae3c",
+                "source": {
+                    "domain": "operator0.com",
+                    "timestamp": 1639580000,
+                    "signature": "12345_signature"
+                }
+            }
+        ],
+        "preferences": {
+            "data": { 
+                "opt_in": true 
+            },
+            "source": {
+                "domain": "cmp1.com",
+                "timestamp": 1639581000,
+                "signature": "12345_signature"
+            }
+        }
+    },
+    "transmissions": [
+        {
+            "version": 0,
+            "seed": {
+                "version": 0,
+                "transaction_id": 1234567,
+                "source": {
+                    "domain": "publisher.com",
+                    "timestamp": 1639582000,
+                    "signature": "12345_signature"
+                }
+            },
+            "source": {
+                "domain": "dsp1.com",
+                "timestamp": 1639581000,
+                "signature": "12345_signature"
+            },
+            "parents": []
+        },
+        {
+            "version": 0,
+            "seed": {
+                "version": 0,
+                "transaction_id": 1234567,
+                "source": {
+                    "domain": "publisher.com",
+                    "timestamp": 1639582000,
+                    "signature": "12345_signature"
+                }
+            },
+            "source": {
+                "domain": "dps1.com",
+                "timestamp": 1639581000,
+                "signature": "12345_signature"
+            },
+            "parents": []
+        }
+    ]
+}

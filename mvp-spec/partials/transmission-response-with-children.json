@@ -1,0 +1,34 @@
+{
+    "version": 0,
+    "transaction_id": 1234567,
+    "receiver": "ssp1.com",
+    "status": "success",
+    "details": "",
+    "source": {
+        "domain": "ssp1.com",
+        "timestamp": 1639589531,
+        "signature": "12345_signature"
+    },
+    "children": [
+        {
+            "receiver": "ssp2.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "ssp2.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        },
+        {
+            "receiver": "dsp.com",
+            "status": "success",
+            "details": "",
+            "source": {
+                "domain": "dsp.com",
+                "timestamp": 1639589531,
+                "signature": "12345_signature"
+            }
+        }
+    ]
+}
