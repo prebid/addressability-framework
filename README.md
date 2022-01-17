@@ -36,3 +36,4 @@ e.g. operator1.prebidsso.com and operator2.prebidsso.com).
 | [mvp-spec/operator-design.md](./mvp-spec/operator-design.md)                                    | Design of the generation of Prebid SSO Data.                                      |
 | [mvp-spec/operator-design-alternative-swan.md](./mvp-spec/operator-design-alternative-swan.md)  | Summary of the SWAN solution for generating Prebid SSO Data.                      |
 | [mvp-spec/operator-requirements.md](./mvp-spec/operator-requirements.md)                        | Requirements for the generation of the Prebid SSO Data.                           |
+| [mvp-spec/website-implementation.md](./mvp-spec/website-implementation.md)                      | Details the implementation of Prebid SSO for Publishers and Advertisers           |
