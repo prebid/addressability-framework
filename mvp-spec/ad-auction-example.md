@@ -995,3 +995,55 @@ graph LR;
 <!--partial-end-->
 </details>
 
+## Signatures
+
+In this section, we will focus on the signature to explain what exactly is signed at which moment. It is an example and based on [security-signatures.md](security-signatures.md)
+
+1. operator-signature-done-before-ad-auction-flow
+
+    Signed by the operator when the id was created.
+    The signature inputs are described in [identifier.md](./model/identifier.md), in the source section, as for all .
+
+2. cmp-signature-done-before-ad-auction-flow
+
+    Signed by the CMP when collecting the user preferences. 
+    The inputs are described in [preferences.md](./model/preferences.md)
+
+3. seed-signature-done-by-publisher-before-T1-and-T2
+
+    Signed by the publisher when initiating the bid request and getting the seed.
+
+Inputs are described here [seed.md](./model/seed.md)
+
+4. transmission-signature-done-by-ssp1-just-after-T1-request
+
+    Signed by SSP1 when receiving the seed from the publisher.
+
+    Inputs for this and the following transmissions are described here. [transmission-request](./model/transmission-request.md). 
+
+    It is important to note that at this step, contents are empty and that therefore transaction ids are only signed via the seeds (not the content) and there are no content id (as it will be created by DSP).
+
+    This signature is also added in the bid response, and not recomputed at the response stage.
+
+5. transmission-signature-done-by-dsp1-just-after-T2-request
+    
+    This is signed by DSP 1 after receiving T2 request and deciding the contents (and there ids) he wanted to send back.
+    
+    Inputs for this signature are describe here [transmission-response](./model/transmission-response.md).
+    
+    For this signature, the contents are available and are therefore signed.
+
+6. transmission-signature-done-by-ssp2-just-after-T3-request
+
+    Signed by SSP2. As for signature 4. 'transmission-signature-done-by-ssp1-just-after-T1-request', it is then reused at the response stage and does not sign content (as it is empty).
+
+
+7. transmission-signature-done-by-dsp2-just-after-T4-request
+
+    As for signature 5, this signature also sign content created by DSP2.
+
+
+8. transmission-signature-done-by-dsp3-just-after-T5-request
+
+    As for signature 5 & 7, this signature also sign content created by DSP3.
+
