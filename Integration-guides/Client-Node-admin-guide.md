@@ -5,7 +5,7 @@ This guide explain how to host an independent Client Node.
 
 ## Deploying the Client Node Service
 
-A Client Node implementation in NodeJS is available [here](https://github.com/prebid/paf-mvp-implementation/tree/main/paf-mvp-operator-client-express).
+A Client Node implementation in NodeJS is available [here](https://github.com/prebid/paf-mvp-implementation/tree/main/paf-mvp-client-express).
 
 It can be deployed on any hosting service of your choice.
 
